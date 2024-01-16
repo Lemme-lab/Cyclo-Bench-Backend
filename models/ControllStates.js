@@ -25,12 +25,37 @@ const controllStates = new mongoose.Schema({
     testRoutine: [
         {
             type: {
-                maxSpeed: Number,
+                rotorSpeed: Number,
+                wingPosition: Number,
                 directionMatrix: [{ type: Number, required: true }],
+                time: Number,
             },
             required: true,
         },
     ],
+    presets: [
+        {
+                    type: {
+                        id: Number,
+                        routine: [
+                            {
+                                type: {
+                                    rotorSpeed: Number,
+                                    wingPosition: Number,
+                                    directionMatrix: [{ type: Number, required: true }],
+                                    time: Number,
+                                },
+                                required: true,
+                            },
+                        ]
+                    },
+                    required: true,
+        }
+    ],
+    setTestRoutine: {
+        type: Boolean,
+        required: true,
+    },
     cageOpen: {
         type: Boolean,
         required: true,

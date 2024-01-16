@@ -14,16 +14,52 @@ routerControll.post('/setEmptyControll', async (request, response) => {
       direction: [0, 0, 0],
       setSpeedPercentage: 0,
       maxSpeedPercentage: 0,
+      setTestRoutine: false,
       testRoutine: [
       {
-        maxSpeed: 0,
-        directionMatrix: [0, 0, 0]
+        rotorSpeed: 0,
+        wingPosition: 0,
+        directionMatrix: [0, 0, 0],
+        time: 0
       }, 
       {
-        maxSpeed: 0,
-        directionMatrix: [0, 0, 0]
+        rotorSpeed: 0,
+        wingPosition: 0,
+        directionMatrix: [0, 0, 0],
+        time: 0
       }, 
     ],
+      presets: [
+        
+            {
+              id: 1,
+              routine: [{
+                rotorSpeed: 0,
+                wingPosition: 0,
+                directionMatrix: [0,0,0],
+                time: 0,
+              }]
+            },
+            {
+              id: 2,
+              routine: [{
+                rotorSpeed: 0,
+                wingPosition: 0,
+                directionMatrix: [0,0,0],
+                time: 0,
+              }]
+            },
+            {
+              id: 3,
+              routine: [{
+                rotorSpeed: 0,
+                wingPosition: 0,
+                directionMatrix: [0,0,0],
+                time: 0,
+              }]
+            },
+            
+      ],
       cageOpen: false,
       emergencyShutdown: false,
       testBenchConnection: false,
@@ -500,6 +536,72 @@ routerControll.get('/getControllParametes', async (request, response) => {
     });
   }
 });
+
+routerControll.get('/getAllPresets', async (request, response) => {
+  try {
+    const result = await ControllStates.findOne({ id: 1 }, 'presets');
+
+    if (!result) {
+      return response.status(404).json({
+        message: 'Presets not found',
+      });
+    }
+
+    return response.status(200).send({
+      message: 'Retrieved all presets successfully',
+      presets: result.presets,
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).send({
+      message: error.message,
+    });
+  }
+});
+
+routerControll.put('/addRoutine', async (request, response) => {
+  try {
+    const { id, routine } = request.body;
+
+    console.log(`Adding Routine to Preset with id ${id}`);
+
+    if (!id || !routine || !Array.isArray(routine) || routine.length === 0) {
+      return response.status(400).send({
+        message: 'Send a valid preset id and an array of routines in the request body',
+      });
+    }
+
+    // Remove all other routines for the specified preset before adding the new ones
+    const result = await ControllStates.findOneAndUpdate(
+      { id: 1, 'presets.id': id },
+      {
+        $set: {
+          'presets.$.routine': routine,
+        },
+      },
+      { new: true }
+    );
+
+    if (!result) {
+      return response.status(404).json({
+        message: `Preset with id ${id} not found`,
+      });
+    }
+
+    return response.status(200).send({
+      message: `Added Routine to Preset with id ${id} successfully`,
+      updatedDocument: result,
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).send({
+      message: error.message,
+    });
+  }
+});
+
+
+
 
 
 

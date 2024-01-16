@@ -5,7 +5,8 @@ import {
     RotorSpeed,
     Torque,
     Thrust,
-    WingPosition
+    WingPosition,
+    MotorSpeed
 } from '../models/SensorData.js'
 
 const routerSensorData = express.Router();
@@ -83,6 +84,46 @@ routerSensorData.post('/setSensorData/SpeedPercentage', async (request, response
         const newsetSpeedPercentage = await SetSpeedPercentage.create(setSpeedPercentage);
 
         return response.status(201).send(newsetSpeedPercentage);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({
+            message: error.message
+        });
+    }
+});
+
+routerSensorData.post('/setSensorData/motorSpeed', async (request, response) => {
+    try {
+        if (!request.body.motorSpeed) {
+            return response.status(400).send({
+                message: 'Send the required "motorSpeed" field',
+            });
+        }
+        if (!Number.isInteger(request.body.motorSpeed)) {
+            return response.status(400).send({
+                message: '"rotorSpeed" must be an integer',
+            });
+        }
+        if (!Number.isInteger(request.body.timeStampManual)) {
+            return response.status(400).send({
+                message: '"timestamp" must be an integer',
+            });
+        }
+        if (!request.body.id) {
+            return response.status(400).send({
+                message: 'Send the required "id" field',
+            });
+        }
+
+        const motorSpeed = {
+            motorSpeed: request.body.motorSpeed,
+            timeStampManual: request.body.timeStampManual,
+            id: request.body.id,
+        };
+
+        const newmotorSpeed = await MotorSpeed.create(motorSpeed);
+
+        return response.status(201).send(newmotorSpeed);
     } catch (error) {
         console.log(error.message);
         response.status(500).send({
@@ -276,7 +317,7 @@ routerSensorData.post('/setSensorData/wingPosition', async (request, response) =
 
 routerSensorData.get('/getSensorData/Speeds', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const setSpeedData = await SetSpeed.find().limit(count);
         return response.status(200).send(setSpeedData);
     } catch (error) {
@@ -289,7 +330,7 @@ routerSensorData.get('/getSensorData/Speeds', async (request, response) => {
 
 routerSensorData.get('/getSensorData/SpeedPercentages', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const setSpeedPercentageData = await SetSpeedPercentage.find().limit(count);
         return response.status(200).send(setSpeedPercentageData);
     } catch (error) {
@@ -300,9 +341,22 @@ routerSensorData.get('/getSensorData/SpeedPercentages', async (request, response
     }
 });
 
-routerSensorData.get('/getSensorData/rotorSpeeds', async (request, response) => {
+routerSensorData.get('/getSensorData/motorSpeeds', async (request, response) => {
     try {
         const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const motorSpeedData = await MotorSpeed.find().limit(count);
+        return response.status(200).send(motorSpeedData);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({
+            message: error.message
+        });
+    }
+});
+
+routerSensorData.get('/getSensorData/rotorSpeeds', async (request, response) => {
+    try {
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const rotorSpeedData = await RotorSpeed.find().limit(count);
         return response.status(200).send(rotorSpeedData);
     } catch (error) {
@@ -315,7 +369,7 @@ routerSensorData.get('/getSensorData/rotorSpeeds', async (request, response) => 
 
 routerSensorData.get('/getSensorData/torques', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const torqueData = await Torque.find().limit(count);
         return response.status(200).send(torqueData);
     } catch (error) {
@@ -328,7 +382,7 @@ routerSensorData.get('/getSensorData/torques', async (request, response) => {
 
 routerSensorData.get('/getSensorData/thrusts', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const thrustData = await Thrust.find().limit(count);
         return response.status(200).send(thrustData);
     } catch (error) {
@@ -341,7 +395,7 @@ routerSensorData.get('/getSensorData/thrusts', async (request, response) => {
 
 routerSensorData.get('/getSensorData/wingPositions', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; // Default to 10 results if count is not provided
+        const count = parseInt(request.query.count) || 100; // Default to 10 results if count is not provided
         const wingPositionData = await WingPosition.find().limit(count);
         return response.status(200).send(wingPositionData);
     } catch (error) {
@@ -354,7 +408,7 @@ routerSensorData.get('/getSensorData/wingPositions', async (request, response) =
 
 routerSensorData.get('/getSensorData/getAllData', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 10; 
+        const count = parseInt(request.query.count) || 100; 
         const setSpeedData = await SetSpeed.find().limit(count);
         const setSpeedPercentageData = await SetSpeedPercentage.find().limit(count);
         const rotorSpeedData = await RotorSpeed.find().limit(count);
