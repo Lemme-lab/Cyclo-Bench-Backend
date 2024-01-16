@@ -9,7 +9,7 @@ const app = express();
 
 // Use CORS middleware with specific options
 const corsOptions = {
-  origin: 'http://localhost:3333', // replace with your actual frontend origin
+  origin: 'http://10.68.14.105:3333', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 };
