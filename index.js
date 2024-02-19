@@ -25,7 +25,7 @@ mongoose.connect(mongoDBURL)
     .then(() => {
         console.log('App Connected to Database');
         console.log('On Port: ' + PORT);
-        app.listen(PORT,  () => {
+        app.listen(PORT, '0.0.0.0', () => {
             console.log("App is listening")
         });
     }).catch((error) => {
