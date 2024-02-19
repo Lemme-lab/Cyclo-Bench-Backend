@@ -317,8 +317,8 @@ routerSensorData.post('/setSensorData/wingPosition', async (request, response) =
 
 routerSensorData.get('/getSensorData/Speeds', async (request, response) => {
     try {
-        const count = parseInt(request.query.count) || 50; // Default to 10 results if count is not provided
-        const setSpeedData = await SetSpeed.find().limit(count);
+        const count = parseInt(request.query.count) || 100; // Default to 100 results if count is not provided
+        const setSpeedData = await SetSpeed.find().sort({ _id: -1 }).limit(count);
         return response.status(200).send(setSpeedData);
     } catch (error) {
         console.log(error.message);
@@ -433,6 +433,7 @@ routerSensorData.get('/getSensorData/getAllData', async (request, response) => {
         });
     }
 });
+
 
 
 
