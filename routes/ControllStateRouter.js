@@ -1,13 +1,10 @@
 import express from 'express';
-import {
-  ControllStates
-} from '../models/ControllStates.js'
+import { ControllStates } from '../models/ControllStates.js'
 
 const routerControll = express.Router();
 
 routerControll.post('/setEmptyControll', async (request, response) => {
   try {
-
     const newControllStates = new ControllStates({
       id: 1,
       motorRun: false,
@@ -15,50 +12,46 @@ routerControll.post('/setEmptyControll', async (request, response) => {
       setSpeedPercentage: 0,
       maxSpeedPercentage: 0,
       setTestRoutine: false,
-      testRoutine: [
-      {
-        rotorSpeed: 0,
-        wingPosition: 0,
-        directionMatrix: [0, 0, 0],
-        time: 0
-      }, 
-      {
-        rotorSpeed: 0,
-        wingPosition: 0,
-        directionMatrix: [0, 0, 0],
-        time: 0
-      }, 
-    ],
-      presets: [
-        
-            {
-              id: 1,
-              routine: [{
-                rotorSpeed: 0,
-                wingPosition: 0,
-                directionMatrix: [0,0,0],
-                time: 0,
-              }]
-            },
-            {
-              id: 2,
-              routine: [{
-                rotorSpeed: 0,
-                wingPosition: 0,
-                directionMatrix: [0,0,0],
-                time: 0,
-              }]
-            },
-            {
-              id: 3,
-              routine: [{
-                rotorSpeed: 0,
-                wingPosition: 0,
-                directionMatrix: [0,0,0],
-                time: 0,
-              }]
-            },
-            
+      testRoutine: [{
+          rotorSpeed: 0,
+          wingPosition: 0,
+          directionMatrix: [0, 0, 0],
+          time: 0
+        },
+        {
+          rotorSpeed: 0,
+          wingPosition: 0,
+          directionMatrix: [0, 0, 0],
+          time: 0
+        },
+      ],
+      presets: [{
+          id: 1,
+          routine: [{
+            rotorSpeed: 0,
+            wingPosition: 0,
+            directionMatrix: [0, 0, 0],
+            time: 0,
+          }]
+        },
+        {
+          id: 2,
+          routine: [{
+            rotorSpeed: 0,
+            wingPosition: 0,
+            directionMatrix: [0, 0, 0],
+            time: 0,
+          }]
+        },
+        {
+          id: 3,
+          routine: [{
+            rotorSpeed: 0,
+            wingPosition: 0,
+            directionMatrix: [0, 0, 0],
+            time: 0,
+          }]
+        },
       ],
       cageOpen: false,
       emergencyShutdown: false,
@@ -66,7 +59,6 @@ routerControll.post('/setEmptyControll', async (request, response) => {
       lastChanged: 0,
     });
 
-    // Save the new document to the database
     const result = await newControllStates.save();
 
     return response.status(201).send({
@@ -571,7 +563,6 @@ routerControll.put('/addRoutine', async (request, response) => {
       });
     }
 
-    // Remove all other routines for the specified preset before adding the new ones
     const result = await ControllStates.findOneAndUpdate(
       { id: 1, 'presets.id': id },
       {
@@ -599,10 +590,5 @@ routerControll.put('/addRoutine', async (request, response) => {
     });
   }
 });
-
-
-
-
-
 
 export default routerControll;
