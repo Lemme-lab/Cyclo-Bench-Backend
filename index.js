@@ -21,22 +21,32 @@ app.use((req, res, next) => {
     next();
 });
 
-mongoose.connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('App Connected to Database');
-        console.log('MongoDB URL:', mongoDBURL);
-        console.log('On Port:', PORT);
-        app.listen(PORT, '0.0.0.0', () => {
-            console.log("App is listening");
-            console.log("Server started at:", new Date().toLocaleString());
+function startServer() {
+    mongoose.connect(mongoDBURL, { useNewUrlParser: true, useUnifiedTopology: true })
+        .then(() => {
+            console.log('App Connected to Database');
+            console.log('MongoDB URL:', mongoDBURL);
+            console.log('On Port:', PORT);
+            app.listen(PORT, '0.0.0.0', () => {
+                console.log("App is listening");
+                console.log("Server started at:", new Date().toLocaleString());
+            });
+        }).catch((error) => {
+            if (error.code === 'EADDRINUSE') {
+                console.log(`Port ${PORT} is already in use, retrying in 1 second...`);
+                setTimeout(() => {
+                    startServer();
+                }, 1000);
+            } else {
+                console.error('Error connecting to MongoDB:', error);
+            }
         });
-    }).catch((error) => {
-        console.error('Error connecting to MongoDB:', error);
-    });
+}
+
+startServer();
 
 // Middleware for error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
-

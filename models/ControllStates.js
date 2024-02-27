@@ -22,6 +22,10 @@ const controllStates = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    WingPosition: {
+        type: Number,
+        required: true,
+    },
     testRoutine: [
         {
             type: {
