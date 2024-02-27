@@ -220,11 +220,11 @@ routerControll.put('/setMaxSpeedPercentage', async (request, response) => {
 
 routerControll.put('/setWingposition', async (request, response) => {
   try {
-    const { Wingposition } = request.body;
+    const { WingPosition } = request.body;
 
-    console.log("New Wingposition: " + Wingposition);
+    console.log("New Wingposition: " + WingPosition);
 
-    if (Wingposition === undefined) {
+    if (WingPosition === undefined) {
       return response.status(400).send({
         message: 'Send valid Wingposition value',
       });
@@ -232,7 +232,7 @@ routerControll.put('/setWingposition', async (request, response) => {
 
     const result = await ControllStates.findOneAndUpdate(
       { id: 1 },
-      { $set: { Wingposition: Wingposition } },
+      { $set: { WingPosition: WingPosition } },
       { new: true }
     );
 
@@ -577,7 +577,7 @@ routerControll.get('/getWingposition', async (request, response) => {
     }
 
     return response.status(200).send({
-      Wingposition: result.Wingposition
+      WingPosition: result.WingPosition
     });
   } catch (error) {
     console.log(error.message);
