@@ -145,6 +145,42 @@ routerControll.put('/setDirection', async (request, response) => {
   }
 });
 
+routerControll.put('/setWingposition', async (request, response) => {
+  try {
+    const { Wingposition } = request.body;
+
+    console.log("New Wingposition: " + Wingposition);
+
+    if (Wingposition === undefined) {
+      return response.status(400).send({
+        message: 'Send valid Wingposition value',
+      });
+    }
+
+    const result = await ControllStates.findOneAndUpdate(
+      { id: 1 },
+      { $set: { Wingposition: Wingposition } },
+      { new: true }
+    );
+
+    if (!result) {
+      return response.status(404).json({
+        message: 'Something went horribly wrong'
+      });
+    }
+
+    return response.status(200).send({
+      message: 'Updated SetWingposition successfully',
+      updatedDocument: result
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).send({
+      message: error.message
+    });
+  }
+});
+
 routerControll.put('/setSpeedPercentage', async (request, response) => {
   try {
     const { SetSpeedPercentage } = request.body;
@@ -415,6 +451,27 @@ routerControll.get('/getMaxSpeedPercentage', async (request, response) => {
 
     return response.status(200).send({
       maxSpeedPercentage: result.maxSpeedPercentage
+    });
+  } catch (error) {
+    console.log(error.message);
+    response.status(500).send({
+      message: error.message
+    });
+  }
+});
+
+routerControll.get('/getWingposition', async (request, response) => {
+  try {
+    const result = await ControllStates.findOne({ id: 1 });
+
+    if (!result) {
+      return response.status(404).json({
+        message: 'Document not found'
+      });
+    }
+
+    return response.status(200).send({
+      Wingposition: result.Wingposition
     });
   } catch (error) {
     console.log(error.message);
