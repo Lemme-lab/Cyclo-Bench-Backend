@@ -18,10 +18,6 @@ const controllStates = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    Wingposition: {
-        type: Number,
-        required: true,
-    },
     maxSpeedPercentage: {
         type: Number,
         required: true,
